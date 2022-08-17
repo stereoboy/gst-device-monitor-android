@@ -1,4 +1,4 @@
-package org.freedesktop.gstreamer.tutorials.tutorial_2;
+package org.freedesktop.gstreamer;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import org.freedesktop.gstreamer.GStreamer;
 
-public class Tutorial2 extends Activity {
+public class DeviceMonitor extends Activity {
     private native void nativeInit();     // Initialize native code, build pipeline, etc
     private native void nativeFinalize(); // Destroy pipeline and shutdown native code
     private native void nativePlay();     // Set pipeline to PLAYING
@@ -112,7 +112,7 @@ public class Tutorial2 extends Activity {
 
     static {
         System.loadLibrary("gstreamer_android");
-        System.loadLibrary("tutorial-2");
+        System.loadLibrary("gst_device_monitor");
         nativeClassInit();
     }
 

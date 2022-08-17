@@ -2,8 +2,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := tutorial-2
-LOCAL_SRC_FILES := tutorial-2.c dummy.cpp
+LOCAL_MODULE    := gst_device_monitor
+LOCAL_SRC_FILES := gst_device_monitor.c dummy.cpp
 LOCAL_SHARED_LIBRARIES := gstreamer_android
 LOCAL_LDLIBS := -llog
 include $(BUILD_SHARED_LIBRARY)
