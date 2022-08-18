@@ -469,7 +469,15 @@ app_function (void *userdata)
   g_main_context_unref (data->context);
   gst_element_set_state (data->pipeline, GST_STATE_NULL);
   gst_object_unref (data->pipeline);
+
 #else
+    GST_INFO ("Device Monitor");
+
+    //gst_init(NULL, NULL);
+
+    int argc = 1;
+    char *_argv[] = {"./gst-device-monitor"};
+    char **argv = _argv;
     gboolean print_version = FALSE;
     GError *err = NULL;
     gchar **arg, **args = NULL;
@@ -505,14 +513,12 @@ app_function (void *userdata)
                                 "[DEVICE_CLASSES[:FILTER_CAPS]] …");
     g_option_context_add_main_entries (ctx, options, GETTEXT_PACKAGE);
     g_option_context_add_group (ctx, gst_init_get_option_group ());
-    /*
     if (!g_option_context_parse (ctx, &argc, &argv, &err)) {
         GST_ERROR ("Error initializing: %s\n", GST_STR_NULL (err->message));
         g_option_context_free (ctx);
         g_clear_error (&err);
         return 1;
     }
-     */
     g_option_context_free (ctx);
 
     GST_DEBUG_CATEGORY_INIT (devmon_debug, "device-monitor", 0,
