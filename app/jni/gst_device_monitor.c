@@ -281,9 +281,9 @@ print_structure_field (GQuark field_id, const GValue * value,
     }
 
     if (val != NULL)
-        g_print ("\n\t\t%s = %s", g_quark_to_string (field_id), val);
+        GST_INFO ("\n\t\t%s = %s", g_quark_to_string (field_id), val);
     else
-        g_print ("\n\t\t%s - could not serialise field of type %s",
+        GST_INFO ("\n\t\t%s - could not serialise field of type %s",
                  g_quark_to_string (field_id), G_VALUE_TYPE_NAME (value));
 
     g_free (val);
@@ -296,7 +296,7 @@ print_field (GQuark field, const GValue * value, gpointer unused)
 {
     gchar *str = gst_value_serialize (value);
 
-    g_print (", %s=%s", g_quark_to_string (field), str);
+    GST_INFO (", %s=%s", g_quark_to_string (field), str);
     g_free (str);
     return TRUE;
 }
@@ -317,44 +317,44 @@ print_device (GstDevice * device, gboolean modified)
     device_class = gst_device_get_device_class (device);
     props = gst_device_get_properties (device);
 
-    g_print ("\nDevice %s:\n\n", modified ? "modified" : "found");
-    g_print ("\tname  : %s\n", name);
-    g_print ("\tclass : %s\n", device_class);
+    GST_INFO ("\nDevice %s:\n\n", modified ? "modified" : "found");
+    GST_INFO ("\tname  : %s\n", name);
+    GST_INFO ("\tclass : %s\n", device_class);
     for (i = 0; i < size; ++i) {
         GstStructure *s = gst_caps_get_structure (caps, i);
         GstCapsFeatures *features = gst_caps_get_features (caps, i);
 
-        g_print ("\t%s %s", (i == 0) ? "caps  :" : "       ",
+        GST_INFO ("\t%s %s", (i == 0) ? "caps  :" : "       ",
                  gst_structure_get_name (s));
         if (features && (gst_caps_features_is_any (features) ||
                          !gst_caps_features_is_equal (features,
                                                       GST_CAPS_FEATURES_MEMORY_SYSTEM_MEMORY))) {
             gchar *features_string = gst_caps_features_to_string (features);
 
-            g_print ("(%s)", features_string);
+            GST_INFO ("(%s)", features_string);
             g_free (features_string);
         }
         gst_structure_foreach (s, print_field, NULL);
-        g_print ("\n");
+        GST_INFO ("\n");
     }
     if (props) {
-        g_print ("\tproperties:");
+        GST_INFO ("\tproperties:");
         gst_structure_foreach (props, print_structure_field, NULL);
         gst_structure_free (props);
-        g_print ("\n");
+        GST_INFO ("\n");
     }
     str = get_launch_line (device);
     if (gst_device_has_classes (device, "Source"))
-        g_print ("\tgst-launch-1.0 %s ! ...\n", str);
+        GST_INFO ("\tgst-launch-1.0 %s ! ...\n", str);
     else if (gst_device_has_classes (device, "Sink"))
-        g_print ("\tgst-launch-1.0 ... ! %s\n", str);
+        GST_INFO ("\tgst-launch-1.0 ... ! %s\n", str);
     else if (gst_device_has_classes (device, "CameraSource")) {
-        g_print ("\tgst-launch-1.0 %s.vfsrc name=camerasrc ! ... "
+        GST_INFO ("\tgst-launch-1.0 %s.vfsrc name=camerasrc ! ... "
                  "camerasrc.vidsrc ! [video/x-h264] ... \n", str);
     }
 
     g_free (str);
-    g_print ("\n");
+    GST_INFO ("\n");
 
     g_free (name);
     g_free (device_class);
@@ -370,8 +370,8 @@ device_removed (GstDevice * device)
 
     name = gst_device_get_display_name (device);
 
-    g_print ("Device removed:\n");
-    g_print ("\tname  : %s\n", name);
+    GST_INFO ("Device removed:\n");
+    GST_INFO ("\tname  : %s\n", name);
 
     g_free (name);
 }
@@ -398,7 +398,7 @@ bus_msg_handler (GstBus * bus, GstMessage * msg, gpointer user_data)
             gst_object_unref (device);
             break;
         default:
-            g_print ("%s message\n", GST_MESSAGE_TYPE_NAME (msg));
+            GST_INFO ("%s message\n", GST_MESSAGE_TYPE_NAME (msg));
             break;
     }
 
@@ -507,7 +507,7 @@ app_function (void *userdata)
     g_option_context_add_group (ctx, gst_init_get_option_group ());
     /*
     if (!g_option_context_parse (ctx, &argc, &argv, &err)) {
-        g_print ("Error initializing: %s\n", GST_STR_NULL (err->message));
+        GST_ERROR ("Error initializing: %s\n", GST_STR_NULL (err->message));
         g_option_context_free (ctx);
         g_clear_error (&err);
         return 1;
@@ -518,13 +518,14 @@ app_function (void *userdata)
     GST_DEBUG_CATEGORY_INIT (devmon_debug, "device-monitor", 0,
                              "gst-device-monitor");
 
-    if (print_version) {
+    if (print_version)
+    {
         gchar *version_str;
 
         version_str = gst_version_string ();
-        g_print ("%s version %s\n", g_get_prgname (), PACKAGE_VERSION);
-        g_print ("%s\n", version_str);
-        g_print ("%s\n", GST_PACKAGE_ORIGIN);
+        GST_INFO ("%s version %s\n", g_get_prgname (), PACKAGE_VERSION);
+        GST_INFO ("%s\n", version_str);
+        GST_INFO ("%s\n", GST_PACKAGE_ORIGIN);
         g_free (version_str);
 
         return 0;
@@ -548,7 +549,7 @@ app_function (void *userdata)
             if (filters[1] != NULL) {
                 caps = gst_caps_from_string (filters[1]);
                 if (caps == NULL)
-                    g_warning ("Couldn't parse device filter caps '%s'", filters[1]);
+                    GST_WARNING ("Couldn't parse device filter caps '%s'", filters[1]);
             }
             gst_device_monitor_add_filter (app.monitor, filters[0], caps);
             if (caps)
@@ -558,12 +559,12 @@ app_function (void *userdata)
     }
     g_strfreev (args);
 
-    g_print ("Probing devices...\n\n");
+    GST_INFO ("Probing devices...\n\n");
 
     timer = g_timer_new ();
 
     if (!gst_device_monitor_start (app.monitor)) {
-        g_printerr ("Failed to start device monitor!\n");
+        GST_ERROR ("Failed to start device monitor!\n");
         return -1;
     }
 
@@ -573,7 +574,7 @@ app_function (void *userdata)
         /* Consume all the messages pending on the bus and exit */
         g_idle_add ((GSourceFunc) quit_loop, app.loop);
     } else {
-        g_print ("Monitoring devices, waiting for devices to be removed or "
+        GST_INFO ("Monitoring devices, waiting for devices to be removed or "
                  "new devices to be added...\n");
     }
 
