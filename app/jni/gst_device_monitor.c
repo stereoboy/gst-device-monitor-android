@@ -608,7 +608,8 @@ gst_native_init (JNIEnv * env, jobject thiz)
   SET_CUSTOM_DATA (env, thiz, custom_data_field_id, data);
   GST_DEBUG_CATEGORY_INIT (debug_category, "device_monitor", 0,
       "Android tutorial 2");
-  gst_debug_set_threshold_for_name ("device_monitor", GST_LEVEL_DEBUG);
+  // TODO
+  gst_debug_set_threshold_for_name ("*", GST_LEVEL_LOG);
   GST_DEBUG ("Created CustomData at %p", data);
   data->app = (*env)->NewGlobalRef (env, thiz);
   GST_DEBUG ("Created GlobalRef for app object at %p", data->app);
@@ -693,6 +694,13 @@ jint
 JNI_OnLoad (JavaVM * vm, void *reserved)
 {
   JNIEnv *env = NULL;
+
+  //TODO
+  //references
+  // - https://lists.freedesktop.org/archives/gstreamer-android/2013-April/000448.html
+  setenv("GST_DEBUG", "*:5", 1);
+  //setenv("GST_DEBUG_NO_COLOR", "1", 1);
+
 
   java_vm = vm;
 
