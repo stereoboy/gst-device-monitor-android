@@ -5,12 +5,22 @@
     android:gravity="center_vertical"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textview_message"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dip"
-        android:gravity="center_horizontal" />
+        android:layout_height="311dp">
+
+        <TextView
+            android:id="@+id/textview_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dip"
+            android:gravity="center_horizontal"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:textColorHighlight="#673AB7"
+            android:textColorHint="#3F51B5"
+            android:textColorLink="#3F51B5" />
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
