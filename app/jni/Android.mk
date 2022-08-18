@@ -6,6 +6,7 @@ LOCAL_MODULE    := gst_device_monitor
 LOCAL_SRC_FILES := gst_device_monitor.c dummy.cpp
 LOCAL_SHARED_LIBRARIES := gstreamer_android
 LOCAL_LDLIBS := -llog
+LOCAL_CFLAGS := -DHAVE_CONFIG_H
 include $(BUILD_SHARED_LIBRARY)
 
 ifndef GSTREAMER_ROOT_ANDROID
