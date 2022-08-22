@@ -2,25 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
+    android:gravity="top"
     android:orientation="vertical" >
 
-    <ScrollView
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="311dp">
+        android:layout_height="555dp">
 
-        <TextView
-            android:id="@+id/textview_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dip"
-            android:gravity="center_horizontal"
-            android:scrollbarAlwaysDrawHorizontalTrack="false"
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:textColorHighlight="#673AB7"
-            android:textColorHint="#3F51B5"
-            android:textColorLink="#3F51B5" />
-    </ScrollView>
+            android:verticalScrollbarPosition="left">
+
+            <TextView
+                android:id="@+id/textview_message"
+                android:layout_width="1000dip"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dip"
+                android:paddingTop="10dip"
+                android:paddingBottom="10dip"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:textSize="10sp"
+                android:typeface="monospace" />
+        </ScrollView>
+    </HorizontalScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

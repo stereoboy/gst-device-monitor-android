@@ -98,6 +98,7 @@ GMainLoop *loop = NULL;
 
 static char *_name = NULL;
 static int indent = 0;
+static GString *message_str = NULL;
 
 static int print_element_info (GstPluginFeature * feature,
                                gboolean print_names);
@@ -126,12 +127,16 @@ n_print (const char *format, ...)
     va_list args;
     int i;
     gchar *str;
-
+#if 0
     if (_name)
         g_print ("%s", _name);
 
     for (i = 0; i < indent; ++i)
         g_print ("  ");
+#else
+    for (i = 0; i < indent; ++i)
+        message_str = g_string_append(message_str, "  ");
+#endif
 
     va_start (args, format);
     str = gst_info_strdup_vprintf (format, args);
@@ -140,7 +145,11 @@ n_print (const char *format, ...)
     if (!str)
         return;
 
+#if 0
     g_print ("%s", str);
+#else
+    message_str = g_string_append(message_str, str);
+#endif
     g_free (str);
 }
 
@@ -2101,7 +2110,15 @@ set_ui_message (const gchar * message, CustomData * data)
 static void *
 app_function (void *userdata)
 {
+    JavaVMAttachArgs args;
+    CustomData *data = (CustomData *) userdata;
 
+    //Initialize
+    message_str = g_string_new("");
+
+    //
+    // reference: https://stackoverflow.com/questions/20878322/initialize-set-char-argv-inside-main-in-one-line
+    //
     int argc = 2;
     char *_argv[] = {"./gst-inspect", "openslessink",};
     char **argv = _argv;
@@ -2329,6 +2346,10 @@ app_function (void *userdata)
         }
     }
 
+    gchar *message = g_string_free(message_str, FALSE);
+    set_ui_message(message, data);
+    __android_log_print(ANDROID_LOG_ERROR, "inspect", ">>\n%s", message);
+    g_free(message);
     done:
 
 #ifdef G_OS_UNIX
@@ -2360,7 +2381,7 @@ gst_native_init (JNIEnv * env, jobject thiz)
   GST_DEBUG_CATEGORY_INIT (debug_category, "inspect", 0,
       "gst-inspect");
   // TODO
-  gst_debug_set_threshold_for_name ("*", GST_LEVEL_DEBUG);
+  gst_debug_set_threshold_for_name ("*", GST_LEVEL_LOG);
   GST_DEBUG ("Created CustomData at %p", data);
   data->app = (*env)->NewGlobalRef (env, thiz);
   GST_DEBUG ("Created GlobalRef for app object at %p", data->app);
@@ -2456,7 +2477,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   java_vm = vm;
 
   if ((*vm)->GetEnv (vm, (void **) &env, JNI_VERSION_1_4) != JNI_OK) {
-    __android_log_print (ANDROID_LOG_ERROR, "device_monitor",
+    __android_log_print (ANDROID_LOG_ERROR, "inspect",
         "Could not retrieve JNIEnv");
     return 0;
   }
