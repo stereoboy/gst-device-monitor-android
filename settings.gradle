@@ -1,1 +1,2 @@
 include ':gst-device-monitor'
+include ':gst-inspect'
