@@ -23,6 +23,8 @@
 #   include <sys/wait.h>
 #endif
 
+#define g_print(...) n_print(__VA_ARGS__)
+
 /* "R" : support color
  * "X" : do not clear the screen when leaving the pager
  * "F" : skip the pager if content fit into the screen
