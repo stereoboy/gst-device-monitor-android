@@ -475,6 +475,9 @@ app_function (void *userdata)
 
     //gst_init(NULL, NULL);
 
+    //
+    // reference: https://stackoverflow.com/questions/20878322/initialize-set-char-argv-inside-main-in-one-line
+    //
     int argc = 1;
     char *_argv[] = {"./gst-device-monitor"};
     char **argv = _argv;
@@ -607,7 +610,7 @@ gst_native_init (JNIEnv * env, jobject thiz)
   CustomData *data = g_new0 (CustomData, 1);
   SET_CUSTOM_DATA (env, thiz, custom_data_field_id, data);
   GST_DEBUG_CATEGORY_INIT (debug_category, "device_monitor", 0,
-      "Android tutorial 2");
+      "gst-device-monitor");
   // TODO
   gst_debug_set_threshold_for_name ("*", GST_LEVEL_LOG);
   GST_DEBUG ("Created CustomData at %p", data);
