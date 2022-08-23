@@ -2105,24 +2105,8 @@ set_ui_message (const gchar * message, CustomData * data)
   (*env)->DeleteLocalRef (env, jmessage);
 }
 
-
-/* Main method for the native code. This is executed on its own thread. */
-static void *
-app_function (void *userdata)
+int gst_inspect(int argc, char *argv[], CustomData *data)
 {
-    JavaVMAttachArgs args;
-    CustomData *data = (CustomData *) userdata;
-
-    //Initialize
-    message_str = g_string_new("");
-
-    //
-    // reference: https://stackoverflow.com/questions/20878322/initialize-set-char-argv-inside-main-in-one-line
-    //
-    int argc = 2;
-    char *_argv[] = {"./gst-inspect", "openslessink",};
-    char **argv = _argv;
-
     gboolean print_all = FALSE;
     gboolean do_print_blacklist = FALSE;
     gboolean plugin_name = FALSE;
@@ -2346,10 +2330,6 @@ app_function (void *userdata)
         }
     }
 
-    gchar *message = g_string_free(message_str, FALSE);
-    set_ui_message(message, data);
-    __android_log_print(ANDROID_LOG_ERROR, "inspect", ">>\n%s", message);
-    g_free(message);
     done:
 
 #ifdef G_OS_UNIX
@@ -2365,6 +2345,42 @@ app_function (void *userdata)
   }
 #endif
 
+    return exit_code;
+
+}
+
+/* Main method for the native code. This is executed on its own thread. */
+static void *
+app_function (void *userdata)
+{
+    JavaVMAttachArgs args;
+    // initialize
+    message_str = g_string_new("");
+
+    CustomData *data = (CustomData *) userdata;
+    //
+    // reference: https://stackoverflow.com/questions/20878322/initialize-set-char-argv-inside-main-in-one-line
+    //
+    {
+        int argc = 2;
+        char *_argv[] = {"./gst-inspect", "openslessrc",};
+        char **argv = _argv;
+        n_print("\n\n\n[ openslessrc ]\n\n");
+        gst_inspect(argc, argv, data);
+    }
+    {
+        int argc = 2;
+        char *_argv[] = {"./gst-inspect", "openslessink",};
+        char **argv = _argv;
+        n_print("\n\n\n[ openslessink ]\n\n");
+        gst_inspect(argc, argv, data);
+    }
+
+    // display result on screen
+    gchar *message = g_string_free(message_str, FALSE);
+    set_ui_message(message, data);
+    __android_log_print(ANDROID_LOG_ERROR, "inspect", ">>\n%s", message);
+    g_free(message);
   return NULL;
 }
 
