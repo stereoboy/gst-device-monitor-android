@@ -3,4 +3,6 @@
     <string name="app_name">GStreamer Inspect</string>
     <string name="button_play">Play</string>
     <string name="button_stop">Stop</string>
+    <string name="button_inspect">inspect</string>
+    <string name="type_the_module_name">type the module name to search</string>
 </resources>
