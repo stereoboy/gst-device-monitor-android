@@ -23,6 +23,10 @@
 #   include <sys/wait.h>
 #endif
 
+
+//
+// reference: https://stackoverflow.com/questions/47247657/c-macro-for-passing-multiple-variable-arguments
+//
 #define g_print(...) n_print(__VA_ARGS__)
 
 /* "R" : support color
