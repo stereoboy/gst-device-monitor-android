@@ -5,9 +5,32 @@
     android:gravity="top"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip">
+
+        <EditText
+            android:id="@+id/editTextTextModuleName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/button_inspect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="inspect" />
+    </LinearLayout>
+
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="555dp">
+        android:layout_height="462dp">
 
         <ScrollView
             android:layout_width="wrap_content"

@@ -23,7 +23,6 @@
 #   include <sys/wait.h>
 #endif
 
-
 /* "R" : support color
  * "X" : do not clear the screen when leaving the pager
  * "F" : skip the pager if content fit into the screen
@@ -2353,34 +2352,17 @@ int gst_inspect(int argc, char *argv[], CustomData *data)
 static void *
 app_function (void *userdata)
 {
+    GST_INFO("app_function()");
     JavaVMAttachArgs args;
     // initialize
-    message_str = g_string_new("");
+//    message_str = g_string_new("");
 
     CustomData *data = (CustomData *) userdata;
-    //
-    // reference: https://stackoverflow.com/questions/20878322/initialize-set-char-argv-inside-main-in-one-line
-    //
-    {
-        int argc = 2;
-        char *_argv[] = {"./gst-inspect", "openslessrc",};
-        char **argv = _argv;
-        n_print("\n\n\n[ openslessrc ]\n\n");
-        gst_inspect(argc, argv, data);
-    }
-    {
-        int argc = 2;
-        char *_argv[] = {"./gst-inspect", "openslessink",};
-        char **argv = _argv;
-        n_print("\n\n\n[ openslessink ]\n\n");
-        gst_inspect(argc, argv, data);
-    }
 
     // display result on screen
-    gchar *message = g_string_free(message_str, FALSE);
-    set_ui_message(message, data);
-    __android_log_print(ANDROID_LOG_ERROR, "inspect", ">>\n%s", message);
-    g_free(message);
+//    gchar *message = g_string_free(message_str, FALSE);
+//    set_ui_message(message, data);
+//    g_free(message);
   return NULL;
 }
 
@@ -2397,7 +2379,7 @@ gst_native_init (JNIEnv * env, jobject thiz)
   GST_DEBUG_CATEGORY_INIT (debug_category, "inspect", 0,
       "gst-inspect");
   // TODO
-  gst_debug_set_threshold_for_name ("*", GST_LEVEL_LOG);
+  gst_debug_set_threshold_for_name ("*", GST_LEVEL_DEBUG);
   GST_DEBUG ("Created CustomData at %p", data);
   data->app = (*env)->NewGlobalRef (env, thiz);
   GST_DEBUG ("Created GlobalRef for app object at %p", data->app);
@@ -2468,13 +2450,55 @@ gst_native_class_init (JNIEnv * env, jclass klass)
   return JNI_TRUE;
 }
 
+//
+// references:
+//  - https://stackoverflow.com/questions/43309657/ndk-pass-text-field-value-to-c-string
+//  - https://developer.android.com/training/articles/perf-jni
+//  - https://stackoverflow.com/questions/18973866/getstringutfchars-function-parameter
+//
+static void
+gst_native_inspect (JNIEnv * env, jobject thiz, jstring in_module_name)
+{
+    CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
+
+    const char *module_name = (*env)->GetStringUTFChars(env, in_module_name, NULL);
+    if (!data)
+        return;
+    //GST_INFO ("gst_native_inspect()");
+    GST_INFO ("gst_native_inspect(%s)", module_name);
+
+    message_str = g_string_new("");
+
+    //
+    // reference: https://stackoverflow.com/questions/20878322/initialize-set-char-argv-inside-main-in-one-line
+    //
+    if (strlen(module_name) > 0) {
+        int argc = 2;
+        char *_argv[] = {"./gst-inspect", module_name,};
+        char **argv = _argv;
+        n_print("\n\n\n[ %s ]\n\n", module_name);
+        gst_inspect(argc, argv, data);
+    } else {
+        int argc = 1;
+        char *_argv[] = {"./gst-inspect",};
+        char **argv = _argv;
+        gst_inspect(argc, argv, data);
+    }
+
+    // display result on screen
+    gchar *message = g_string_free(message_str, FALSE);
+    set_ui_message(message, data);
+    g_free(message);
+}
+
 /* List of implemented native methods */
 static JNINativeMethod native_methods[] = {
   {"nativeInit", "()V", (void *) gst_native_init},
   {"nativeFinalize", "()V", (void *) gst_native_finalize},
   {"nativePlay", "()V", (void *) gst_native_play},
   {"nativePause", "()V", (void *) gst_native_pause},
-  {"nativeClassInit", "()Z", (void *) gst_native_class_init}
+  {"nativeClassInit", "()Z", (void *) gst_native_class_init},
+  {"nativeInspect", "(Ljava/lang/String;)V", (void *) gst_native_inspect},
 };
 
 /* Library initializer */
