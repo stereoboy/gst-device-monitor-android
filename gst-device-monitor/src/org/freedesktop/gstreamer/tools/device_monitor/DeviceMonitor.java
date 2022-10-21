@@ -1,26 +1,23 @@
-package org.freedesktop.gstreamer;
+package org.freedesktop.gstreamer.tools.device_monitor;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.freedesktop.gstreamer.GStreamer;
+import org.freedesktop.gstreamer.tools.device_monitor.R;
 
-public class Inspect extends Activity {
-
+public class DeviceMonitor extends Activity {
     private native void nativeInit();     // Initialize native code, build pipeline, etc
     private native void nativeFinalize(); // Destroy pipeline and shutdown native code
     private native void nativePlay();     // Set pipeline to PLAYING
     private native void nativePause();    // Set pipeline to PAUSED
     private static native boolean nativeClassInit(); // Initialize native class: cache Method IDs for callbacks
-    private native void nativeInspect(String module_name);
     private long native_custom_data;      // Native code will use this to keep private data
 
     private boolean is_playing_desired;   // Whether the user asked to go to PLAYING
@@ -70,17 +67,6 @@ public class Inspect extends Activity {
         this.findViewById(R.id.button_play).setEnabled(false);
         this.findViewById(R.id.button_stop).setEnabled(false);
 
-        Button inspect = (Button) this.findViewById(R.id.button_inspect);
-        final Activity activity = this;
-        inspect.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final EditText inputView = (EditText) activity.findViewById(R.id.editTextTextModuleName);
-                String module_name = inputView.getText().toString();
-                nativeInspect(module_name);
-            }
-        });
-
         nativeInit();
     }
 
@@ -127,7 +113,7 @@ public class Inspect extends Activity {
 
     static {
         System.loadLibrary("gstreamer_android");
-        System.loadLibrary("gst-inspect");
+        System.loadLibrary("gst_device_monitor");
         nativeClassInit();
     }
 

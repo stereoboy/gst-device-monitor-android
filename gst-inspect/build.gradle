@@ -5,7 +5,7 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        applicationId "org.freedesktop.gstreamer"
+        applicationId "org.freedesktop.gstreamer.tools.inspect"
         minSdkVersion 15
         targetSdkVersion 15
         versionCode 1

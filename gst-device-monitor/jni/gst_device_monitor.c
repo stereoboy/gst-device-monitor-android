@@ -713,7 +713,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
     return 0;
   }
   jclass klass = (*env)->FindClass (env,
-      "org/freedesktop/gstreamer/DeviceMonitor");
+      "org/freedesktop/gstreamer/tools/device_monitor/DeviceMonitor");
   (*env)->RegisterNatives (env, klass, native_methods,
       G_N_ELEMENTS (native_methods));
 

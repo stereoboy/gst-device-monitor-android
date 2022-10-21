@@ -2504,6 +2504,7 @@ static JNINativeMethod native_methods[] = {
   {"nativePlay", "()V", (void *) gst_native_play},
   {"nativePause", "()V", (void *) gst_native_pause},
   {"nativeClassInit", "()Z", (void *) gst_native_class_init},
+  // reference: https://intrepidgeeks.com/tutorial/jni-field-descriptor-ljavalangstring-v-syntax-definition
   {"nativeInspect", "(Ljava/lang/String;)V", (void *) gst_native_inspect},
 };
 
@@ -2528,7 +2529,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
     return 0;
   }
   jclass klass = (*env)->FindClass (env,
-      "org/freedesktop/gstreamer/Inspect");
+      "org/freedesktop/gstreamer/tools/inspect/Inspect");
   (*env)->RegisterNatives (env, klass, native_methods,
       G_N_ELEMENTS (native_methods));
 
